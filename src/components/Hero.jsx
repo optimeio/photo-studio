@@ -84,20 +84,21 @@ const Hero = () => {
   }, []);
 
   return (
-    <section id="hero" ref={heroRef} className="relative h-[100svh] min-h-[650px] w-full flex flex-col justify-center overflow-hidden bg-[#12100E] selection:bg-[#C5A059] selection:text-[#12100E]">
+    <section id="hero" ref={heroRef} className="relative h-[100svh] min-h-[600px] w-full flex flex-col justify-center overflow-hidden bg-[#12100E] selection:bg-[#C5A059] selection:text-[#12100E]">
       {/* Background Wrapper */}
       <div ref={parallaxWrapper} className="absolute inset-0 w-full h-full pointer-events-none">
         {/* Main Image */}
         <img 
           ref={bgRef}
-          src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" 
+          src="https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=2070&auto=format&fit=crop" 
           alt="Luxury Cinematic Wedding Photography" 
-          className="absolute inset-0 w-full h-full object-cover origin-center object-[75%_top] md:object-center"
+          className="absolute inset-0 w-full h-full object-cover origin-center object-center"
           style={{ opacity: 1, scale: 1.08 }}
         />
         
-        {/* Slightly dim overlay for text readability, as requested */}
-        <div className="absolute inset-0 bg-black/20" />
+        {/* Dark gradient overlay - left side for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
         
         {/* Film Grain */}
         <div 
@@ -107,8 +108,8 @@ const Hero = () => {
       </div>
 
       {/* Content - Increased top margin heavily so it absolutely clears the logo */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-12 pt-24 md:pt-32 pb-8 md:pb-12">
-        <div ref={contentRef} className="max-w-[700px] text-center lg:text-left mx-auto lg:mx-0 flex flex-col items-center lg:items-start" style={{ opacity: 1 }}>
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-12 pt-28 pb-16 md:pb-20 flex flex-col justify-center h-full">
+        <div ref={contentRef} className="max-w-[620px] text-left flex flex-col items-start" style={{ opacity: 1 }}>
           
           {/* Eyebrow - Changed to white for max visibility, added a gold line next to it for the premium feel */}
           <div className="hero-eyebrow flex items-center gap-4 mb-4 opacity-0">
@@ -119,7 +120,7 @@ const Hero = () => {
           </div>
           
           {/* Main Heading */}
-          <h1 className="font-serif text-[clamp(2.5rem,8vw,6.5rem)] font-normal leading-[0.95] text-[#FFFDF8] mb-4 md:mb-5 max-w-[650px] drop-shadow-lg">
+          <h1 className="font-serif text-[clamp(2.8rem,6.5vw,5.5rem)] font-normal leading-[0.93] text-[#FFFDF8] mb-5 md:mb-6 drop-shadow-lg">
             <span className="block overflow-hidden"><span className="hero-line-inner block opacity-0">Every <span className="text-[#C5A059] italic">Moment</span></span></span>
             <span className="block overflow-hidden"><span className="hero-line-inner block opacity-0">Deserves</span></span>
             <span className="block overflow-hidden"><span className="hero-line-inner block opacity-0">To Be <span className="text-[#C5A059]">Remembered.</span></span></span>

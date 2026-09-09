@@ -79,15 +79,18 @@ const Navbar = () => {
     { name: 'Contact', href: '/contact' },
   ];
 
-  const isLightPage = location.pathname === '/services' || location.pathname === '/contact';
-  const useDarkText = isLightPage && !isScrolled;
+  // On home page: transparent at top, dark when scrolled
+  // On ALL other pages: always dark background so text is always visible
+  const isHomePage = location.pathname === '/';
+  const showDarkBg = isScrolled || !isHomePage;
+  const useDarkText = false; // Always use light text — bg is always dark or transparent-over-dark-image
 
   return (
     <nav 
       ref={navRef}
       className={`fixed w-full z-50 transition-all duration-500 ease-in-out ${
-        isScrolled 
-          ? 'py-3 bg-[#12100e]/90 backdrop-blur-[14px] border-b border-white/[0.08]' 
+        showDarkBg
+          ? 'py-3 bg-[#12100e]/95 backdrop-blur-[14px] border-b border-white/[0.08] shadow-lg' 
           : 'py-6 bg-transparent border-b border-transparent'
       } translate-y-0`}
     >
