@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+Disallow: /scratch_projects.json
+
+Sitemap: [INSERT_ACTUAL_DOMAIN_HERE]/sitemap.xml
