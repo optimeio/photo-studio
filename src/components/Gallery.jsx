@@ -55,7 +55,9 @@ const OurWorks = () => {
   const [activeFilter, setActiveFilter] = useState("DISCOVER");
   const sectionRef = useRef(null);
 
-  const filteredWorks = activeFilter === "DISCOVER" ? [...works].sort(() => 0.5 - Math.random()).slice(0, 20) : works.filter(w => w.category === activeFilter);
+  const filteredWorks = React.useMemo(() => {
+    return activeFilter === "DISCOVER" ? works.slice(0, 20) : works.filter(w => w.category === activeFilter);
+  }, [activeFilter]);
 
   const handleFilter = (f) => {
     if (f === activeFilter) return;
@@ -79,46 +81,49 @@ const OurWorks = () => {
       );
     }, sectionRef);
 
-    // Refresh after full page layout so triggers fire correctly
-    // even when Gallery is placed below other sections (e.g. home page)
     const refreshId = setTimeout(() => ScrollTrigger.refresh(), 300);
-
-    let timeoutId;
-    const observer = new ResizeObserver(() => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => ScrollTrigger.refresh(), 100);
-    });
-    if (sectionRef.current) observer.observe(sectionRef.current);
 
     return () => {
       ctx.revert();
-      observer.disconnect();
-      clearTimeout(timeoutId);
       clearTimeout(refreshId);
     };
-  }, [activeFilter]);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.utils.toArray('.work-card').forEach((card, idx) => {
-        const rotDir = idx % 2 === 0 ? -12 : 12;
+      const cards = gsap.utils.toArray('.work-card');
+      cards.forEach((card, idx) => {
+        const rotDir = idx % 2 === 0 ? -10 : 10;
         gsap.fromTo(card,
-          { y: 200, scale: 0.5, opacity: 0, rotationZ: rotDir, filter: 'blur(20px)' },
+          { 
+            y: 120, 
+            scale: 0.75, 
+            opacity: 0, 
+            rotationZ: rotDir, 
+            filter: 'blur(12px)' 
+          },
           {
-            y: 0, scale: 1, opacity: 1, rotationZ: 0, filter: 'blur(0px)',
-            duration: 1.2, ease: 'expo.out',
+            y: 0, 
+            scale: 1, 
+            opacity: 1, 
+            rotationZ: 0, 
+            filter: 'blur(0px)',
+            duration: 0.9, 
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: card,
-              start: 'top 95%',
+              start: 'top 92%',
               toggleActions: 'play none none reverse',
+              invalidateOnRefresh: true,
             }
           }
         );
       });
     }, sectionRef);
 
-    // Ensure correct scroll measurements after layout settles
-    const refreshId = setTimeout(() => ScrollTrigger.refresh(), 400);
+    const t1 = setTimeout(() => ScrollTrigger.refresh(), 100);
+    const t2 = setTimeout(() => ScrollTrigger.refresh(), 400);
+    const t3 = setTimeout(() => ScrollTrigger.refresh(), 1000);
 
     let timeoutId;
     const observer = new ResizeObserver(() => {
@@ -131,9 +136,11 @@ const OurWorks = () => {
       ctx.revert();
       observer.disconnect();
       clearTimeout(timeoutId);
-      clearTimeout(refreshId);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
     };
-  }, [activeFilter]);
+  }, [filteredWorks]);
 
   return (
     <section id="gallery" ref={sectionRef} className="py-12 md:py-16 px-6 w-full bg-[#12100E]">
@@ -213,12 +220,14 @@ const OurWorks = () => {
           {filteredWorks.map((work, idx) => (
             <div
               key={`${work.title}-${activeFilter}-${idx}`}
-              className={`work-card group relative overflow-hidden rounded-sm cursor-pointer masonry-item`}
+              className={`work-card group relative overflow-hidden rounded-sm cursor-pointer masonry-item bg-[#1a1714] min-h-[200px]`}
             >
               {/* Uncropped Image */}
               <img
                 src={work.src}
                 alt={work.title}
+                loading="lazy"
+                onLoad={() => ScrollTrigger.refresh()}
                 className="w-full h-auto block transition-transform duration-[2000ms] ease-out group-hover:scale-[1.05]"
                 style={{ willChange: 'transform' }}
               />
