@@ -66,15 +66,12 @@ const OurWorks = () => {
   };
 
   useEffect(() => {
-    // This context runs only once for static elements (Header, Filters)
     const ctx = gsap.context(() => {
-      /* Section header reveal */
       gsap.fromTo('.works-header',
         { y: 50, opacity: 0 },
         { y: 0, opacity: 1, duration: 1, ease: 'power3.out',
           scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' } }
       );
-      /* Filters slide in */
       gsap.fromTo('.works-filter',
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.6, stagger: 0.06, ease: 'power2.out',
@@ -82,47 +79,34 @@ const OurWorks = () => {
       );
     }, sectionRef);
 
+    // Refresh after full page layout so triggers fire correctly
+    // even when Gallery is placed below other sections (e.g. home page)
+    const refreshId = setTimeout(() => ScrollTrigger.refresh(), 300);
+
     let timeoutId;
     const observer = new ResizeObserver(() => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 100);
+      timeoutId = setTimeout(() => ScrollTrigger.refresh(), 100);
     });
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    if (sectionRef.current) observer.observe(sectionRef.current);
 
     return () => {
       ctx.revert();
       observer.disconnect();
       clearTimeout(timeoutId);
+      clearTimeout(refreshId);
     };
   }, [activeFilter]);
 
   useEffect(() => {
-    // This context runs every time the filter changes (or initial mount)
     const ctx = gsap.context(() => {
-      /* Cards Extraordinary Scrub Reveal */
       gsap.utils.toArray('.work-card').forEach((card, idx) => {
         const rotDir = idx % 2 === 0 ? -12 : 12;
-        
         gsap.fromTo(card,
-          { 
-            y: 200, 
-            scale: 0.5, 
-            opacity: 0, 
-            rotationZ: rotDir,
-            filter: 'blur(20px)' 
-          },
-          { 
-            y: 0, 
-            scale: 1, 
-            opacity: 1, 
-            rotationZ: 0,
-            filter: 'blur(0px)',
-            duration: 1.2,
-            ease: 'expo.out',
+          { y: 200, scale: 0.5, opacity: 0, rotationZ: rotDir, filter: 'blur(20px)' },
+          {
+            y: 0, scale: 1, opacity: 1, rotationZ: 0, filter: 'blur(0px)',
+            duration: 1.2, ease: 'expo.out',
             scrollTrigger: {
               trigger: card,
               start: 'top 95%',
@@ -131,25 +115,23 @@ const OurWorks = () => {
           }
         );
       });
-
-      /* Images are now Masonry, removed Parallax wrapper to avoid cropping */
     }, sectionRef);
+
+    // Ensure correct scroll measurements after layout settles
+    const refreshId = setTimeout(() => ScrollTrigger.refresh(), 400);
 
     let timeoutId;
     const observer = new ResizeObserver(() => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 100);
+      timeoutId = setTimeout(() => ScrollTrigger.refresh(), 100);
     });
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    if (sectionRef.current) observer.observe(sectionRef.current);
 
     return () => {
       ctx.revert();
       observer.disconnect();
       clearTimeout(timeoutId);
+      clearTimeout(refreshId);
     };
   }, [activeFilter]);
 

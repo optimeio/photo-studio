@@ -90,9 +90,9 @@ const Hero = () => {
         {/* Main Image */}
         <img 
           ref={bgRef}
-          src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=2560&auto=format&fit=crop" 
+          src="https://images.unsplash.com/photo-1519741497674-611481863552?q=85&w=2560&auto=format&fit=crop" 
           alt="Luxury Cinematic Wedding Photography — LumaCraft" 
-          className="absolute inset-0 w-full h-full object-cover origin-center object-[60%_center]"
+          className="absolute inset-0 w-full h-full object-cover origin-center object-center"
           style={{ opacity: 1, scale: 1.08 }}
         />
         
