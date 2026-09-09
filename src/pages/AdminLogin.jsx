@@ -17,8 +17,6 @@ const AdminLogin = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    // Simulate a small delay for UX
     setTimeout(() => {
       if (username === DEMO_USERNAME && password === DEMO_PASSWORD) {
         localStorage.setItem('adminAuth', 'true');
@@ -28,7 +26,19 @@ const AdminLogin = () => {
         setError('Invalid credentials. Please try again.');
       }
       setLoading(false);
-    }, 600);
+    }, 500);
+  };
+
+  // One-click demo login — no typing needed
+  const handleDemoAccess = () => {
+    setLoading(true);
+    setUsername(DEMO_USERNAME);
+    setPassword(DEMO_PASSWORD);
+    setTimeout(() => {
+      localStorage.setItem('adminAuth', 'true');
+      localStorage.setItem('adminUser', DEMO_USERNAME);
+      navigate('/admin');
+    }, 400);
   };
 
   return (
@@ -108,6 +118,17 @@ const AdminLogin = () => {
                 {loading ? 'Authenticating...' : 'Enter Dashboard'}
               </span>
               <div className="absolute inset-0 bg-[#C5A059] scale-x-0 origin-left transition-transform duration-500 ease-out group-hover/btn:scale-x-100"></div>
+            </button>
+
+            {/* One-click demo button */}
+            <button
+              type="button"
+              onClick={handleDemoAccess}
+              disabled={loading}
+              className="w-full mt-3 py-3.5 rounded-md border border-[#C5A059] text-[#C5A059] hover:bg-[#C5A059]/10 font-bold uppercase tracking-[0.15em] text-[10px] transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              <span className="text-base leading-none">⚡</span>
+              {loading ? 'Entering...' : 'Quick Demo Access'}
             </button>
           </form>
         </div>

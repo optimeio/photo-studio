@@ -14,8 +14,8 @@ import Preloader from './components/Preloader';
 
 // Simple protected route wrapper
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('adminToken');
-  if (!token) {
+  const auth = localStorage.getItem('adminAuth');
+  if (!auth) {
     return <Navigate to="/admin/login" replace />;
   }
   return children;
