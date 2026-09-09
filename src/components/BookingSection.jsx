@@ -8,7 +8,7 @@ const BookingSection = ({ selectedCategory = 'wedding', onCategoryChange }) => {
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -17,14 +17,13 @@ const BookingSection = ({ selectedCategory = 'wedding', onCategoryChange }) => {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     
-    // Split Full Name into firstName and lastName for the backend schema
+    // Split Full Name into firstName and lastName
     if (data.firstName) {
       const nameParts = data.firstName.trim().split(' ');
       data.firstName = nameParts[0];
-      data.lastName = nameParts.slice(1).join(' ') || ' '; // fallback if no last name
+      data.lastName = nameParts.slice(1).join(' ') || '';
     }
 
-    // Add selected category and date explicitly if not part of form data
     data.sessionType = selectedCategory;
     if (selectedDate) {
       data.date = selectedDate.toISOString();
@@ -34,24 +33,22 @@ const BookingSection = ({ selectedCategory = 'wedding', onCategoryChange }) => {
       return;
     }
 
+    // ─── Save to localStorage (works on Vercel, no backend needed) ───
     try {
-      const response = await fetch('https://photo-studio-1nvn.onrender.com/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit booking');
-      }
-
+      const existing = JSON.parse(localStorage.getItem('lumacraft_bookings') || '[]');
+      const newBooking = {
+        ...data,
+        _id: `booking_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      };
+      existing.push(newBooking);
+      localStorage.setItem('lumacraft_bookings', JSON.stringify(existing));
       setSuccess(true);
-      e.target.reset(); // Clear the form
+      e.target.reset();
+      setSelectedDate(null);
     } catch (err) {
-      console.error(err);
-      setError('Something went wrong. Please try again later.');
+      setError('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -64,14 +61,14 @@ const BookingSection = ({ selectedCategory = 'wedding', onCategoryChange }) => {
         {/* Left Side - Image */}
         <div className="relative min-h-[250px] md:min-h-[400px]">
           <img 
-            src="/images/wedding/wedding-32.webp" 
+            src="https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=800&auto=format&fit=crop" 
             alt="Booking Inspiration" 
-            className="absolute inset-0 w-full h-full object-cover object-[center_25%] md:object-center"
+            className="absolute inset-0 w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-[#12100E]/20"></div>
+          <div className="absolute inset-0 bg-[#12100E]/30"></div>
           <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8 text-[#FFFDF8]">
             <h3 className="font-serif text-2xl md:text-3xl font-bold mb-2 drop-shadow-md">Let's Create Magic.</h3>
-            <p className="text-[10px] md:text-xs font-light tracking-widest uppercase opacity-90 drop-shadow-md">Pixelbees Studio</p>
+            <p className="text-[10px] md:text-xs font-light tracking-widest uppercase opacity-90 drop-shadow-md">LumaCraft Photography</p>
           </div>
         </div>
 

@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Lock, User } from 'lucide-react';
 
+// ─── Demo credentials (client-side only, works on Vercel) ───
+const DEMO_USERNAME = 'admin';
+const DEMO_PASSWORD = 'lumacraft2026';
+
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -9,31 +13,22 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    try {
-      const response = await fetch('https://photo-studio-1nvn.onrender.com/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('adminToken', data.token);
+    // Simulate a small delay for UX
+    setTimeout(() => {
+      if (username === DEMO_USERNAME && password === DEMO_PASSWORD) {
+        localStorage.setItem('adminAuth', 'true');
+        localStorage.setItem('adminUser', username);
         navigate('/admin');
       } else {
-        setError(data.error || 'Login failed');
+        setError('Invalid credentials. Please try again.');
       }
-    } catch (err) {
-      setError('Server error. Please try again later.');
-    } finally {
       setLoading(false);
-    }
+    }, 600);
   };
 
   return (
@@ -49,7 +44,7 @@ const AdminLogin = () => {
           <div className="w-16 h-16 rounded-full bg-[#12100E] border border-white/[0.05] shadow-[0_0_30px_rgba(197,160,89,0.1)] flex items-center justify-center mb-6 transition-all duration-700 group-hover:shadow-[0_0_40px_rgba(197,160,89,0.2)] group-hover:border-[#C5A059]/30">
             <Camera className="w-6 h-6 text-[#C5A059] transition-transform duration-700 group-hover:scale-110" />
           </div>
-          <h1 className="font-serif text-3xl font-bold tracking-[0.2em] uppercase text-[#FFFDF8] mb-2 drop-shadow-md">Pixelbees</h1>
+          <h1 className="font-serif text-3xl font-bold tracking-[0.2em] uppercase text-[#FFFDF8] mb-2 drop-shadow-md">LumaCraft</h1>
           <div className="flex items-center gap-4 w-full justify-center opacity-70">
             <div className="h-[1px] w-8 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
             <span className="text-[9px] tracking-[0.4em] font-sans font-bold text-[#C5A059]">SECURE PORTAL</span>
@@ -58,7 +53,7 @@ const AdminLogin = () => {
         </div>
 
         {/* Glassmorphic Login Box */}
-        <div className="w-full backdrop-blur-xl bg-[#12100E]/40 p-10 rounded-2xl border border-white/[0.05] shadow-2xl relative overflow-hidden group">
+        <div className="w-full backdrop-blur-xl bg-[#12100E]/40 p-10 rounded-2xl border border-white/[0.05] shadow-2xl relative overflow-hidden">
           {/* Subtle top edge highlight */}
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.15] to-transparent"></div>
           
@@ -117,12 +112,12 @@ const AdminLogin = () => {
           </form>
         </div>
 
-        {/* Admin Credentials Hint */}
+        {/* Demo Credentials Hint */}
         <div className="mt-6 flex justify-center">
           <div className="bg-white/[0.02] border border-white/[0.05] rounded-lg px-6 py-3 backdrop-blur-sm shadow-lg text-center">
             <p className="text-[10px] text-[#C5A059] uppercase tracking-[0.2em] font-bold mb-1">Demo Credentials</p>
             <p className="text-xs text-[#FFFDF8]/70">Username: <span className="text-[#FFFDF8] font-bold tracking-wider">admin</span></p>
-            <p className="text-xs text-[#FFFDF8]/70">Password: <span className="text-[#FFFDF8] font-bold tracking-wider">pixelbees2026</span></p>
+            <p className="text-xs text-[#FFFDF8]/70">Password: <span className="text-[#FFFDF8] font-bold tracking-wider">lumacraft2026</span></p>
           </div>
         </div>
 
